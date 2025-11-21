@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: licenses-mysql
+    environment:
+      - MYSQL_DATABASE=licenses
+      - MYSQL_USER=licenses
+      - MYSQL_PASSWORD=changeit
+      - MYSQL_ROOT_PASSWORD=changeit
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-plicensecheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: licenses-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/licenses?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=licenses
+      - SPRING_DATASOURCE_PASSWORD=changeit
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:
+
+
