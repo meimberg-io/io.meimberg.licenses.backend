@@ -1,0 +1,8 @@
+README.md
+pom.xml
+src/main/java/io/meimberg/licenses/web/api/ApiUtil.java
+src/main/java/io/meimberg/licenses/web/api/UsersApi.java
+src/main/java/io/meimberg/licenses/web/dto/PageUser.java
+src/main/java/io/meimberg/licenses/web/dto/User.java
+src/main/java/io/meimberg/licenses/web/dto/UserCreateRequest.java
+src/main/java/io/meimberg/licenses/web/dto/UserUpdateRequest.java
