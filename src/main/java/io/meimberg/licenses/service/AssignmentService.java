@@ -83,6 +83,28 @@ public class AssignmentService {
   public long activeCount(UUID productVariantId) {
     return assignmentRepository.countByProductVariantIdAndStatus(productVariantId, AssignmentStatus.ACTIVE);
   }
+
+  @Transactional
+  public Assignment reactivate(UUID assignmentId) {
+    Assignment assignment = assignmentRepository.findById(assignmentId)
+        .orElseThrow(() -> new EntityNotFoundException("Assignment not found: " + assignmentId));
+    UUID userId = assignment.getUser().getId();
+    UUID variantId = assignment.getProductVariant().getId();
+    if (assignmentRepository.existsByUserIdAndProductVariantIdAndStatus(userId, variantId, AssignmentStatus.ACTIVE)) {
+      throw new ConflictException("Active assignment already exists for user and variant");
+    }
+    ProductVariant variant = assignment.getProductVariant();
+    Integer capacity = variant.getCapacity();
+    if (capacity != null) {
+      long activeCount = assignmentRepository.countByProductVariantIdAndStatus(variantId, AssignmentStatus.ACTIVE);
+      if (activeCount >= capacity) {
+        throw new ConflictException("Variant capacity exceeded");
+      }
+    }
+    assignment.setStatus(AssignmentStatus.ACTIVE);
+    assignment.setEndsAt(null);
+    return assignmentRepository.save(assignment);
+  }
 }
 
 

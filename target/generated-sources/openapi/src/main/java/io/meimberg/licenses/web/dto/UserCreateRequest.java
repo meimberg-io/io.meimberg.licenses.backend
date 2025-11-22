@@ -19,7 +19,7 @@ import jakarta.annotation.Generated;
  * UserCreateRequest
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T00:32:10.129625873+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T00:49:20.868947187+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 public class UserCreateRequest {
 
   private String email;
