@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit moduleName="licenses-backend" name="licenses-backend" framework="JPA" ormUnit="licenses-backend:licenses-backend" defaultDataSourceId="f6d28b2d-ac2b-4429-8226-d858948c1061" />
+    </persistence-units>
+  </component>
+</project>
