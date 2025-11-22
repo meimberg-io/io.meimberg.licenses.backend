@@ -90,6 +90,280 @@ paths:
       responses:
         '204':
           description: No content
+  /products:
+    get:
+      summary: List products
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageProduct'
+    post:
+      summary: Create product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+  /products/{id}:
+    get:
+      summary: Get product by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Not found
+    put:
+      summary: Update product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '204':
+          description: No content
+  /products/{productId}/variants:
+    get:
+      summary: List variants for product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageProductVariant'
+    post:
+      summary: Create product variant
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductVariantCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariant'
+  /variants/{id}:
+    get:
+      summary: Get variant by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariant'
+        '404':
+          description: Not found
+    put:
+      summary: Update variant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductVariantUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariant'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete variant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '204':
+          description: No content
+  /variants/{id}/availability:
+    get:
+      summary: Get variant availability
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariantAvailability'
+  /assignments:
+    get:
+      summary: List assignments
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - in: query
+          name: variantId
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [ACTIVE, REVOKED]
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageAssignment'
+    post:
+      summary: Create assignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        '409':
+          description: Conflict (capacity or duplicate)
+  /assignments/{id}:
+    get:
+      summary: Get assignment by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        '404':
+          description: Not found
+    patch:
+      summary: Update assignment (revoke/reactivate)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        '409':
+          description: Conflict (capacity or duplicate)
 components:
   parameters:
     Page:
@@ -165,4 +439,135 @@ components:
           type: integer
         number:
           type: integer
+    Product:
+      type: object
+      required: [id, key, name]
+      properties:
+        id: { $ref: '#/components/schemas/UUID' }
+        key: { type: string }
+        name: { type: string }
+        description: { type: string }
+    ProductCreateRequest:
+      type: object
+      required: [key, name]
+      properties:
+        key: { type: string }
+        name: { type: string }
+        description: { type: string }
+    ProductUpdateRequest:
+      type: object
+      properties:
+        key: { type: string }
+        name: { type: string }
+        description: { type: string }
+    PageProduct:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/Product' }
+        totalElements: { type: integer }
+        totalPages: { type: integer }
+        size: { type: integer }
+        number: { type: integer }
+    ProductVariant:
+      type: object
+      required: [id, productId, key, name]
+      properties:
+        id: { $ref: '#/components/schemas/UUID' }
+        productId: { $ref: '#/components/schemas/UUID' }
+        key: { type: string }
+        name: { type: string }
+        capacity: { type: integer, nullable: true }
+        attributes:
+          type: object
+          additionalProperties: true
+          nullable: true
+    ProductVariantCreateRequest:
+      type: object
+      required: [key, name]
+      properties:
+        key: { type: string }
+        name: { type: string }
+        capacity: { type: integer, nullable: true }
+        attributes:
+          type: object
+          additionalProperties: true
+          nullable: true
+    ProductVariantUpdateRequest:
+      type: object
+      properties:
+        key: { type: string }
+        name: { type: string }
+        capacity: { type: integer, nullable: true }
+        attributes:
+          type: object
+          additionalProperties: true
+          nullable: true
+    PageProductVariant:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/ProductVariant' }
+        totalElements: { type: integer }
+        totalPages: { type: integer }
+        size: { type: integer }
+        number: { type: integer }
+    VariantAvailability:
+      type: object
+      required: [capacity, assignedActiveCount, available]
+      properties:
+        capacity: { type: integer, nullable: true }
+        assignedActiveCount: { type: integer }
+        available: { type: boolean }
+    Assignment:
+      type: object
+      required: [id, userId, productVariantId, status]
+      properties:
+        id: { $ref: '#/components/schemas/UUID' }
+        userId: { $ref: '#/components/schemas/UUID' }
+        productVariantId: { $ref: '#/components/schemas/UUID' }
+        status:
+          type: string
+          enum: [ACTIVE, REVOKED]
+        startsAt:
+          type: string
+          format: date-time
+          nullable: true
+        endsAt:
+          type: string
+          format: date-time
+          nullable: true
+        note:
+          type: string
+          nullable: true
+    AssignmentCreateRequest:
+      type: object
+      required: [userId, productVariantId]
+      properties:
+        userId: { $ref: '#/components/schemas/UUID' }
+        productVariantId: { $ref: '#/components/schemas/UUID' }
+        startsAt: { type: string, format: date-time, nullable: true }
+        note: { type: string, nullable: true }
+    AssignmentUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [ACTIVE, REVOKED]
+        endsAt:
+          type: string
+          format: date-time
+          nullable: true
+    PageAssignment:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/Assignment' }
+        totalElements: { type: integer }
+        totalPages: { type: integer }
+        size: { type: integer }
+        number: { type: integer }
 
