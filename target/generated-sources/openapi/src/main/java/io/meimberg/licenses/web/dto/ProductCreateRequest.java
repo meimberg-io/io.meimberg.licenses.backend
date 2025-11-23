@@ -23,7 +23,7 @@ import jakarta.annotation.Generated;
  * ProductCreateRequest
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T15:50:51.445317955+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T17:42:22.760008697+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 public class ProductCreateRequest {
 
   private String key;
@@ -33,6 +33,8 @@ public class ProductCreateRequest {
   private String description;
 
   private JsonNullable<UUID> manufacturerId = JsonNullable.<UUID>undefined();
+
+  private JsonNullable<UUID> categoryId = JsonNullable.<UUID>undefined();
 
   public ProductCreateRequest() {
     super();
@@ -126,6 +128,26 @@ public class ProductCreateRequest {
     this.manufacturerId = manufacturerId;
   }
 
+  public ProductCreateRequest categoryId(UUID categoryId) {
+    this.categoryId = JsonNullable.of(categoryId);
+    return this;
+  }
+
+  /**
+   * Get categoryId
+   * @return categoryId
+   */
+  @Valid 
+  @Schema(name = "categoryId", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("categoryId")
+  public JsonNullable<UUID> getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(JsonNullable<UUID> categoryId) {
+    this.categoryId = categoryId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -138,7 +160,8 @@ public class ProductCreateRequest {
     return Objects.equals(this.key, productCreateRequest.key) &&
         Objects.equals(this.name, productCreateRequest.name) &&
         Objects.equals(this.description, productCreateRequest.description) &&
-        equalsNullable(this.manufacturerId, productCreateRequest.manufacturerId);
+        equalsNullable(this.manufacturerId, productCreateRequest.manufacturerId) &&
+        equalsNullable(this.categoryId, productCreateRequest.categoryId);
   }
 
   private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
@@ -147,7 +170,7 @@ public class ProductCreateRequest {
 
   @Override
   public int hashCode() {
-    return Objects.hash(key, name, description, hashCodeNullable(manufacturerId));
+    return Objects.hash(key, name, description, hashCodeNullable(manufacturerId), hashCodeNullable(categoryId));
   }
 
   private static <T> int hashCodeNullable(JsonNullable<T> a) {
@@ -165,6 +188,7 @@ public class ProductCreateRequest {
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    manufacturerId: ").append(toIndentedString(manufacturerId)).append("\n");
+    sb.append("    categoryId: ").append(toIndentedString(categoryId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

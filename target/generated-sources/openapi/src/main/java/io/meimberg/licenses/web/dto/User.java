@@ -20,7 +20,7 @@ import jakarta.annotation.Generated;
  * User
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T15:50:51.445317955+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T17:42:22.760008697+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 public class User {
 
   private UUID id;
@@ -29,6 +29,8 @@ public class User {
 
   private String displayName;
 
+  private UUID departmentId;
+
   public User() {
     super();
   }
@@ -36,10 +38,11 @@ public class User {
   /**
    * Constructor with only required parameters
    */
-  public User(UUID id, String email, String displayName) {
+  public User(UUID id, String email, String displayName, UUID departmentId) {
     this.id = id;
     this.email = email;
     this.displayName = displayName;
+    this.departmentId = departmentId;
   }
 
   public User id(UUID id) {
@@ -102,6 +105,26 @@ public class User {
     this.displayName = displayName;
   }
 
+  public User departmentId(UUID departmentId) {
+    this.departmentId = departmentId;
+    return this;
+  }
+
+  /**
+   * Get departmentId
+   * @return departmentId
+   */
+  @NotNull @Valid 
+  @Schema(name = "departmentId", requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty("departmentId")
+  public UUID getDepartmentId() {
+    return departmentId;
+  }
+
+  public void setDepartmentId(UUID departmentId) {
+    this.departmentId = departmentId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -113,12 +136,13 @@ public class User {
     User user = (User) o;
     return Objects.equals(this.id, user.id) &&
         Objects.equals(this.email, user.email) &&
-        Objects.equals(this.displayName, user.displayName);
+        Objects.equals(this.displayName, user.displayName) &&
+        Objects.equals(this.departmentId, user.departmentId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, email, displayName);
+    return Objects.hash(id, email, displayName, departmentId);
   }
 
   @Override
@@ -128,6 +152,7 @@ public class User {
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    displayName: ").append(toIndentedString(displayName)).append("\n");
+    sb.append("    departmentId: ").append(toIndentedString(departmentId)).append("\n");
     sb.append("}");
     return sb.toString();
   }
