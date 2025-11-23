@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-23T01:28:12+0100",
+    date = "2025-11-23T15:50:40+0100",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Ubuntu)"
 )
 @Component
@@ -27,8 +27,8 @@ public class ProductVariantMapperImpl implements ProductVariantMapper {
         productVariant.setKey( entity.getKey() );
         productVariant.setName( entity.getName() );
 
-        productVariant.setAttributes( toNullableMap(fromJson(entity.getAttributes())) );
-        productVariant.setCapacity( toNullableInteger(entity.getCapacity()) );
+        productVariant.setDescription( toNullableString(entity.getDescription()) );
+        productVariant.setPrice( toNullableDouble(entity.getPrice()) );
 
         return productVariant;
     }

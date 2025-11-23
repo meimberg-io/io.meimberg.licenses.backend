@@ -4,12 +4,9 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 import org.openapitools.jackson.nullable.JsonNullable;
-import org.springframework.format.annotation.DateTimeFormat;
 import java.util.NoSuchElementException;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
@@ -26,7 +23,7 @@ import jakarta.annotation.Generated;
  * Assignment
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T03:42:56.603338904+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T15:50:51.445317955+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 public class Assignment {
 
   private UUID id;
@@ -34,49 +31,6 @@ public class Assignment {
   private UUID userId;
 
   private UUID productVariantId;
-
-  /**
-   * Gets or Sets status
-   */
-  public enum StatusEnum {
-    ACTIVE("ACTIVE"),
-    
-    REVOKED("REVOKED");
-
-    private String value;
-
-    StatusEnum(String value) {
-      this.value = value;
-    }
-
-    @JsonValue
-    public String getValue() {
-      return value;
-    }
-
-    @Override
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static StatusEnum fromValue(String value) {
-      for (StatusEnum b : StatusEnum.values()) {
-        if (b.value.equals(value)) {
-          return b;
-        }
-      }
-      throw new IllegalArgumentException("Unexpected value '" + value + "'");
-    }
-  }
-
-  private StatusEnum status;
-
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private JsonNullable<OffsetDateTime> startsAt = JsonNullable.<OffsetDateTime>undefined();
-
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private JsonNullable<OffsetDateTime> endsAt = JsonNullable.<OffsetDateTime>undefined();
 
   private JsonNullable<String> note = JsonNullable.<String>undefined();
 
@@ -87,11 +41,10 @@ public class Assignment {
   /**
    * Constructor with only required parameters
    */
-  public Assignment(UUID id, UUID userId, UUID productVariantId, StatusEnum status) {
+  public Assignment(UUID id, UUID userId, UUID productVariantId) {
     this.id = id;
     this.userId = userId;
     this.productVariantId = productVariantId;
-    this.status = status;
   }
 
   public Assignment id(UUID id) {
@@ -154,66 +107,6 @@ public class Assignment {
     this.productVariantId = productVariantId;
   }
 
-  public Assignment status(StatusEnum status) {
-    this.status = status;
-    return this;
-  }
-
-  /**
-   * Get status
-   * @return status
-   */
-  @NotNull 
-  @Schema(name = "status", requiredMode = Schema.RequiredMode.REQUIRED)
-  @JsonProperty("status")
-  public StatusEnum getStatus() {
-    return status;
-  }
-
-  public void setStatus(StatusEnum status) {
-    this.status = status;
-  }
-
-  public Assignment startsAt(OffsetDateTime startsAt) {
-    this.startsAt = JsonNullable.of(startsAt);
-    return this;
-  }
-
-  /**
-   * Get startsAt
-   * @return startsAt
-   */
-  @Valid 
-  @Schema(name = "startsAt", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("startsAt")
-  public JsonNullable<OffsetDateTime> getStartsAt() {
-    return startsAt;
-  }
-
-  public void setStartsAt(JsonNullable<OffsetDateTime> startsAt) {
-    this.startsAt = startsAt;
-  }
-
-  public Assignment endsAt(OffsetDateTime endsAt) {
-    this.endsAt = JsonNullable.of(endsAt);
-    return this;
-  }
-
-  /**
-   * Get endsAt
-   * @return endsAt
-   */
-  @Valid 
-  @Schema(name = "endsAt", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("endsAt")
-  public JsonNullable<OffsetDateTime> getEndsAt() {
-    return endsAt;
-  }
-
-  public void setEndsAt(JsonNullable<OffsetDateTime> endsAt) {
-    this.endsAt = endsAt;
-  }
-
   public Assignment note(String note) {
     this.note = JsonNullable.of(note);
     return this;
@@ -246,9 +139,6 @@ public class Assignment {
     return Objects.equals(this.id, assignment.id) &&
         Objects.equals(this.userId, assignment.userId) &&
         Objects.equals(this.productVariantId, assignment.productVariantId) &&
-        Objects.equals(this.status, assignment.status) &&
-        equalsNullable(this.startsAt, assignment.startsAt) &&
-        equalsNullable(this.endsAt, assignment.endsAt) &&
         equalsNullable(this.note, assignment.note);
   }
 
@@ -258,7 +148,7 @@ public class Assignment {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, userId, productVariantId, status, hashCodeNullable(startsAt), hashCodeNullable(endsAt), hashCodeNullable(note));
+    return Objects.hash(id, userId, productVariantId, hashCodeNullable(note));
   }
 
   private static <T> int hashCodeNullable(JsonNullable<T> a) {
@@ -275,9 +165,6 @@ public class Assignment {
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    productVariantId: ").append(toIndentedString(productVariantId)).append("\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    startsAt: ").append(toIndentedString(startsAt)).append("\n");
-    sb.append("    endsAt: ").append(toIndentedString(endsAt)).append("\n");
     sb.append("    note: ").append(toIndentedString(note)).append("\n");
     sb.append("}");
     return sb.toString();

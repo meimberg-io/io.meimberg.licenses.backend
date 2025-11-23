@@ -8,8 +8,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -43,16 +41,6 @@ public class Assignment {
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "product_variant_id", nullable = false)
   private ProductVariant productVariant;
-
-  @Enumerated(EnumType.STRING)
-  @Column(name = "status", nullable = false, length = 16)
-  private AssignmentStatus status = AssignmentStatus.ACTIVE;
-
-  @Column(name = "starts_at")
-  private Instant startsAt;
-
-  @Column(name = "ends_at")
-  private Instant endsAt;
 
   @Column(name = "note", length = 1000)
   private String note;

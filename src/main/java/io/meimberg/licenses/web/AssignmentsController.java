@@ -1,7 +1,6 @@
 package io.meimberg.licenses.web;
 
 import io.meimberg.licenses.domain.Assignment;
-import io.meimberg.licenses.domain.AssignmentStatus;
 import io.meimberg.licenses.repository.AssignmentRepository;
 import io.meimberg.licenses.service.AssignmentService;
 import io.meimberg.licenses.web.api.AssignmentsApi;
@@ -11,7 +10,6 @@ import io.meimberg.licenses.web.dto.PageAssignment;
 import io.meimberg.licenses.web.mapper.AssignmentMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -40,24 +38,15 @@ public class AssignmentsController implements AssignmentsApi {
   }
 
   @Override
-  public ResponseEntity<PageAssignment> assignmentsGet(UUID userId, UUID variantId, String status, Integer page, Integer size, String sort) {
+  public ResponseEntity<PageAssignment> assignmentsGet(UUID userId, UUID variantId, Integer page, Integer size, String sort) {
     Pageable pageable = buildPageable(page, size, sort);
     Page<Assignment> result;
-    AssignmentStatus st = status == null ? null : AssignmentStatus.valueOf(status);
-    if (userId != null && variantId != null && st != null) {
-      result = assignmentRepository.findByUserIdAndProductVariantIdAndStatus(userId, variantId, st, pageable);
-    } else if (userId != null && variantId != null) {
+    if (userId != null && variantId != null) {
       result = assignmentRepository.findByUserIdAndProductVariantId(userId, variantId, pageable);
-    } else if (userId != null && st != null) {
-      result = assignmentRepository.findByUserIdAndStatus(userId, st, pageable);
-    } else if (variantId != null && st != null) {
-      result = assignmentRepository.findByProductVariantIdAndStatus(variantId, st, pageable);
     } else if (userId != null) {
       result = assignmentRepository.findByUserId(userId, pageable);
     } else if (variantId != null) {
       result = assignmentRepository.findByProductVariantId(variantId, pageable);
-    } else if (st != null) {
-      result = assignmentRepository.findByStatus(st, pageable);
     } else {
       result = assignmentRepository.findAll(pageable);
     }
@@ -81,26 +70,21 @@ public class AssignmentsController implements AssignmentsApi {
 
   @Override
   public ResponseEntity<io.meimberg.licenses.web.dto.Assignment> assignmentsIdPatch(UUID id, @Valid AssignmentUpdateRequest body) {
-    Assignment updated;
-    if (body.getStatus() != null) {
-      AssignmentStatus st = AssignmentStatus.valueOf(body.getStatus().getValue());
-      if (st == AssignmentStatus.REVOKED) {
-        OffsetDateTime endsAt = (body.getEndsAt() != null && body.getEndsAt().isPresent()) ? body.getEndsAt().get() : null;
-        updated = assignmentService.revoke(id, endsAt == null ? null : endsAt.toInstant());
-      } else {
-        updated = assignmentService.reactivate(id);
-      }
-    } else {
-      updated = assignmentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Assignment not found"));
-    }
-    return ResponseEntity.ok(assignmentMapper.toDto(updated));
+    // Updates are not currently supported - assignments are either created or deleted
+    Assignment assignment = assignmentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Assignment not found"));
+    return ResponseEntity.ok(assignmentMapper.toDto(assignment));
+  }
+
+  @Override
+  public ResponseEntity<Void> assignmentsIdDelete(UUID id) {
+    assignmentService.delete(id);
+    return ResponseEntity.noContent().build();
   }
 
   @Override
   public ResponseEntity<io.meimberg.licenses.web.dto.Assignment> assignmentsPost(@Valid AssignmentCreateRequest body) {
-    OffsetDateTime startsAt = (body.getStartsAt() != null && body.getStartsAt().isPresent()) ? body.getStartsAt().get() : null;
     String note = (body.getNote() != null && body.getNote().isPresent()) ? body.getNote().get() : null;
-    Assignment created = assignmentService.assign(body.getUserId(), body.getProductVariantId(), startsAt == null ? null : startsAt.toInstant(), note);
+    Assignment created = assignmentService.assign(body.getUserId(), body.getProductVariantId(), note);
     return ResponseEntity.status(201).body(assignmentMapper.toDto(created));
   }
 

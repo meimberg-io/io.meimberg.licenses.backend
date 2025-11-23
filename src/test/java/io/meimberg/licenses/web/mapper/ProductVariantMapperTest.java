@@ -1,8 +1,7 @@
 package io.meimberg.licenses.web.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,13 +27,13 @@ class ProductVariantMapperTest {
     entity.setProduct(product);
     entity.setKey("variant-key");
     entity.setName("Variant Name");
-    entity.setCapacity(10);
+    entity.setDescription("Test description");
     entity.setCreatedAt(Instant.now());
     entity.setUpdatedAt(Instant.now());
   }
 
   @Test
-  void toDto_withCapacity() {
+  void toDto_withDescription() {
     io.meimberg.licenses.web.dto.ProductVariant dto = mapper.toDto(entity);
 
     assertThat(dto).isNotNull();
@@ -42,53 +41,40 @@ class ProductVariantMapperTest {
     assertThat(dto.getProductId()).isEqualTo(product.getId());
     assertThat(dto.getKey()).isEqualTo(entity.getKey());
     assertThat(dto.getName()).isEqualTo(entity.getName());
-    assertThat(dto.getCapacity()).isNotNull();
-    assertThat(dto.getCapacity().isPresent()).isTrue();
-    assertThat(dto.getCapacity().get()).isEqualTo(10);
+    assertThat(dto.getDescription()).isNotNull();
+    assertThat(dto.getDescription().isPresent()).isTrue();
+    assertThat(dto.getDescription().get()).isEqualTo("Test description");
   }
 
   @Test
-  void toDto_withoutCapacity() {
-    entity.setCapacity(null);
+  void toDto_withoutDescription() {
+    entity.setDescription(null);
 
     io.meimberg.licenses.web.dto.ProductVariant dto = mapper.toDto(entity);
 
-    assertThat(dto.getCapacity()).isNotNull();
-    assertThat(dto.getCapacity().isPresent()).isFalse();
+    assertThat(dto.getDescription()).isNotNull();
+    assertThat(dto.getDescription().isPresent()).isFalse();
   }
 
   @Test
-  void toDto_withAttributes() throws Exception {
-    Map<String, Object> attrs = Map.of("key1", "value1", "key2", 42);
-    String json = new ObjectMapper().writeValueAsString(attrs);
-    entity.setAttributes(json);
+  void toDto_withPrice() {
+    entity.setPrice(new BigDecimal("99.99"));
 
     io.meimberg.licenses.web.dto.ProductVariant dto = mapper.toDto(entity);
 
-    assertThat(dto.getAttributes()).isNotNull();
-    assertThat(dto.getAttributes().isPresent()).isTrue();
-    assertThat(dto.getAttributes().get()).containsEntry("key1", "value1");
-    assertThat(dto.getAttributes().get()).containsEntry("key2", 42);
+    assertThat(dto.getPrice()).isNotNull();
+    assertThat(dto.getPrice().isPresent()).isTrue();
+    assertThat(dto.getPrice().get()).isEqualTo(99.99);
   }
 
   @Test
-  void toDto_withoutAttributes() {
-    entity.setAttributes(null);
+  void toDto_withoutPrice() {
+    entity.setPrice(null);
 
     io.meimberg.licenses.web.dto.ProductVariant dto = mapper.toDto(entity);
 
-    assertThat(dto.getAttributes()).isNotNull();
-    assertThat(dto.getAttributes().isPresent()).isFalse();
-  }
-
-  @Test
-  void toNullableInteger() {
-    JsonNullable<Integer> result1 = mapper.toNullableInteger(42);
-    assertThat(result1.isPresent()).isTrue();
-    assertThat(result1.get()).isEqualTo(42);
-
-    JsonNullable<Integer> result2 = mapper.toNullableInteger(null);
-    assertThat(result2.isPresent()).isFalse();
+    assertThat(dto.getPrice()).isNotNull();
+    assertThat(dto.getPrice().isPresent()).isFalse();
   }
 }
 

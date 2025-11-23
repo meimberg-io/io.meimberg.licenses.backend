@@ -4,7 +4,10 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.Arrays;
 import java.util.UUID;
+import org.openapitools.jackson.nullable.JsonNullable;
+import java.util.NoSuchElementException;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
@@ -20,7 +23,7 @@ import jakarta.annotation.Generated;
  * Product
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T03:42:56.603338904+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T15:50:51.445317955+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 public class Product {
 
   private UUID id;
@@ -30,6 +33,8 @@ public class Product {
   private String name;
 
   private String description;
+
+  private JsonNullable<UUID> manufacturerId = JsonNullable.<UUID>undefined();
 
   public Product() {
     super();
@@ -124,6 +129,26 @@ public class Product {
     this.description = description;
   }
 
+  public Product manufacturerId(UUID manufacturerId) {
+    this.manufacturerId = JsonNullable.of(manufacturerId);
+    return this;
+  }
+
+  /**
+   * Get manufacturerId
+   * @return manufacturerId
+   */
+  @Valid 
+  @Schema(name = "manufacturerId", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("manufacturerId")
+  public JsonNullable<UUID> getManufacturerId() {
+    return manufacturerId;
+  }
+
+  public void setManufacturerId(JsonNullable<UUID> manufacturerId) {
+    this.manufacturerId = manufacturerId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -136,12 +161,24 @@ public class Product {
     return Objects.equals(this.id, product.id) &&
         Objects.equals(this.key, product.key) &&
         Objects.equals(this.name, product.name) &&
-        Objects.equals(this.description, product.description);
+        Objects.equals(this.description, product.description) &&
+        equalsNullable(this.manufacturerId, product.manufacturerId);
+  }
+
+  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
+    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, key, name, description);
+    return Objects.hash(id, key, name, description, hashCodeNullable(manufacturerId));
+  }
+
+  private static <T> int hashCodeNullable(JsonNullable<T> a) {
+    if (a == null) {
+      return 1;
+    }
+    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
   }
 
   @Override
@@ -152,6 +189,7 @@ public class Product {
     sb.append("    key: ").append(toIndentedString(key)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
+    sb.append("    manufacturerId: ").append(toIndentedString(manufacturerId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

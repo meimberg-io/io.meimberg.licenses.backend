@@ -4,11 +4,8 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import java.time.OffsetDateTime;
 import java.util.Arrays;
 import org.openapitools.jackson.nullable.JsonNullable;
-import org.springframework.format.annotation.DateTimeFormat;
 import java.util.NoSuchElementException;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
@@ -25,87 +22,29 @@ import jakarta.annotation.Generated;
  * AssignmentUpdateRequest
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T03:42:56.603338904+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T15:50:51.445317955+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 public class AssignmentUpdateRequest {
 
-  /**
-   * Gets or Sets status
-   */
-  public enum StatusEnum {
-    ACTIVE("ACTIVE"),
-    
-    REVOKED("REVOKED");
+  private JsonNullable<String> unused = JsonNullable.<String>undefined();
 
-    private String value;
-
-    StatusEnum(String value) {
-      this.value = value;
-    }
-
-    @JsonValue
-    public String getValue() {
-      return value;
-    }
-
-    @Override
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static StatusEnum fromValue(String value) {
-      for (StatusEnum b : StatusEnum.values()) {
-        if (b.value.equals(value)) {
-          return b;
-        }
-      }
-      throw new IllegalArgumentException("Unexpected value '" + value + "'");
-    }
-  }
-
-  private StatusEnum status;
-
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private JsonNullable<OffsetDateTime> endsAt = JsonNullable.<OffsetDateTime>undefined();
-
-  public AssignmentUpdateRequest status(StatusEnum status) {
-    this.status = status;
+  public AssignmentUpdateRequest unused(String unused) {
+    this.unused = JsonNullable.of(unused);
     return this;
   }
 
   /**
-   * Get status
-   * @return status
+   * Get unused
+   * @return unused
    */
   
-  @Schema(name = "status", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("status")
-  public StatusEnum getStatus() {
-    return status;
+  @Schema(name = "_unused", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("_unused")
+  public JsonNullable<String> getUnused() {
+    return unused;
   }
 
-  public void setStatus(StatusEnum status) {
-    this.status = status;
-  }
-
-  public AssignmentUpdateRequest endsAt(OffsetDateTime endsAt) {
-    this.endsAt = JsonNullable.of(endsAt);
-    return this;
-  }
-
-  /**
-   * Get endsAt
-   * @return endsAt
-   */
-  @Valid 
-  @Schema(name = "endsAt", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("endsAt")
-  public JsonNullable<OffsetDateTime> getEndsAt() {
-    return endsAt;
-  }
-
-  public void setEndsAt(JsonNullable<OffsetDateTime> endsAt) {
-    this.endsAt = endsAt;
+  public void setUnused(JsonNullable<String> unused) {
+    this.unused = unused;
   }
 
   @Override
@@ -117,8 +56,7 @@ public class AssignmentUpdateRequest {
       return false;
     }
     AssignmentUpdateRequest assignmentUpdateRequest = (AssignmentUpdateRequest) o;
-    return Objects.equals(this.status, assignmentUpdateRequest.status) &&
-        equalsNullable(this.endsAt, assignmentUpdateRequest.endsAt);
+    return equalsNullable(this.unused, assignmentUpdateRequest.unused);
   }
 
   private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
@@ -127,7 +65,7 @@ public class AssignmentUpdateRequest {
 
   @Override
   public int hashCode() {
-    return Objects.hash(status, hashCodeNullable(endsAt));
+    return Objects.hash(hashCodeNullable(unused));
   }
 
   private static <T> int hashCodeNullable(JsonNullable<T> a) {
@@ -141,8 +79,7 @@ public class AssignmentUpdateRequest {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class AssignmentUpdateRequest {\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    endsAt: ").append(toIndentedString(endsAt)).append("\n");
+    sb.append("    unused: ").append(toIndentedString(unused)).append("\n");
     sb.append("}");
     return sb.toString();
   }
