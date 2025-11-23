@@ -1,9 +1,0 @@
-/home/oli/workspace/io.meimberg.licenses.backend/src/test/java/io/meimberg/licenses/DatabaseIntegrationTest.java
-/home/oli/workspace/io.meimberg.licenses.backend/src/test/java/io/meimberg/licenses/service/AssignmentServiceTest.java
-/home/oli/workspace/io.meimberg.licenses.backend/src/test/java/io/meimberg/licenses/service/ProductServiceTest.java
-/home/oli/workspace/io.meimberg.licenses.backend/src/test/java/io/meimberg/licenses/service/ProductVariantServiceTest.java
-/home/oli/workspace/io.meimberg.licenses.backend/src/test/java/io/meimberg/licenses/service/UserServiceTest.java
-/home/oli/workspace/io.meimberg.licenses.backend/src/test/java/io/meimberg/licenses/web/mapper/AssignmentMapperTest.java
-/home/oli/workspace/io.meimberg.licenses.backend/src/test/java/io/meimberg/licenses/web/mapper/ProductMapperTest.java
-/home/oli/workspace/io.meimberg.licenses.backend/src/test/java/io/meimberg/licenses/web/mapper/ProductVariantMapperTest.java
-/home/oli/workspace/io.meimberg.licenses.backend/src/test/java/io/meimberg/licenses/web/mapper/UserMapperTest.java

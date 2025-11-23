@@ -94,6 +94,10 @@ paths:
     get:
       summary: List products
       parameters:
+        - in: query
+          name: manufacturerId
+          schema:
+            $ref: '#/components/schemas/UUID'
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Size'
         - $ref: '#/components/parameters/Sort'
@@ -291,11 +295,6 @@ paths:
           name: variantId
           schema:
             $ref: '#/components/schemas/UUID'
-        - in: query
-          name: status
-          schema:
-            type: string
-            enum: [ACTIVE, REVOKED]
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Size'
         - $ref: '#/components/parameters/Sort'
@@ -342,7 +341,7 @@ paths:
         '404':
           description: Not found
     patch:
-      summary: Update assignment (revoke/reactivate)
+      summary: Update assignment
       parameters:
         - name: id
           in: path
@@ -362,8 +361,102 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Assignment'
-        '409':
-          description: Conflict (capacity or duplicate)
+        '404':
+          description: Not found
+    delete:
+      summary: Delete assignment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '204':
+          description: No content
+        '404':
+          description: Not found
+  /manufacturers:
+    get:
+      summary: List manufacturers
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageManufacturer'
+    post:
+      summary: Create manufacturer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManufacturerCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manufacturer'
+  /manufacturers/{id}:
+    get:
+      summary: Get manufacturer by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manufacturer'
+        '404':
+          description: Not found
+    put:
+      summary: Update manufacturer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManufacturerUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manufacturer'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete manufacturer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '204':
+          description: No content
 components:
   parameters:
     Page:
@@ -447,6 +540,10 @@ components:
         key: { type: string }
         name: { type: string }
         description: { type: string }
+        manufacturerId:
+          type: string
+          format: uuid
+          nullable: true
     ProductCreateRequest:
       type: object
       required: [key, name]
@@ -454,12 +551,20 @@ components:
         key: { type: string }
         name: { type: string }
         description: { type: string }
+        manufacturerId:
+          type: string
+          format: uuid
+          nullable: true
     ProductUpdateRequest:
       type: object
       properties:
         key: { type: string }
         name: { type: string }
         description: { type: string }
+        manufacturerId:
+          type: string
+          format: uuid
+          nullable: true
     PageProduct:
       type: object
       properties:
@@ -478,10 +583,10 @@ components:
         productId: { $ref: '#/components/schemas/UUID' }
         key: { type: string }
         name: { type: string }
-        capacity: { type: integer, nullable: true }
-        attributes:
-          type: object
-          additionalProperties: true
+        description: { type: string, nullable: true }
+        price:
+          type: number
+          format: double
           nullable: true
     ProductVariantCreateRequest:
       type: object
@@ -489,20 +594,20 @@ components:
       properties:
         key: { type: string }
         name: { type: string }
-        capacity: { type: integer, nullable: true }
-        attributes:
-          type: object
-          additionalProperties: true
+        description: { type: string, nullable: true }
+        price:
+          type: number
+          format: double
           nullable: true
     ProductVariantUpdateRequest:
       type: object
       properties:
         key: { type: string }
         name: { type: string }
-        capacity: { type: integer, nullable: true }
-        attributes:
-          type: object
-          additionalProperties: true
+        description: { type: string, nullable: true }
+        price:
+          type: number
+          format: double
           nullable: true
     PageProductVariant:
       type: object
@@ -523,22 +628,11 @@ components:
         available: { type: boolean }
     Assignment:
       type: object
-      required: [id, userId, productVariantId, status]
+      required: [id, userId, productVariantId]
       properties:
         id: { $ref: '#/components/schemas/UUID' }
         userId: { $ref: '#/components/schemas/UUID' }
         productVariantId: { $ref: '#/components/schemas/UUID' }
-        status:
-          type: string
-          enum: [ACTIVE, REVOKED]
-        startsAt:
-          type: string
-          format: date-time
-          nullable: true
-        endsAt:
-          type: string
-          format: date-time
-          nullable: true
         note:
           type: string
           nullable: true
@@ -548,17 +642,12 @@ components:
       properties:
         userId: { $ref: '#/components/schemas/UUID' }
         productVariantId: { $ref: '#/components/schemas/UUID' }
-        startsAt: { type: string, format: date-time, nullable: true }
         note: { type: string, nullable: true }
     AssignmentUpdateRequest:
       type: object
       properties:
-        status:
+        _unused:
           type: string
-          enum: [ACTIVE, REVOKED]
-        endsAt:
-          type: string
-          format: date-time
           nullable: true
     PageAssignment:
       type: object
@@ -566,6 +655,37 @@ components:
         content:
           type: array
           items: { $ref: '#/components/schemas/Assignment' }
+        totalElements: { type: integer }
+        totalPages: { type: integer }
+        size: { type: integer }
+        number: { type: integer }
+    Manufacturer:
+      type: object
+      required: [id, name]
+      properties:
+        id: { $ref: '#/components/schemas/UUID' }
+        name: { type: string }
+        url: { type: string, nullable: true }
+        description: { type: string, nullable: true }
+    ManufacturerCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string }
+        url: { type: string, nullable: true }
+        description: { type: string, nullable: true }
+    ManufacturerUpdateRequest:
+      type: object
+      properties:
+        name: { type: string }
+        url: { type: string, nullable: true }
+        description: { type: string, nullable: true }
+    PageManufacturer:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/Manufacturer' }
         totalElements: { type: integer }
         totalPages: { type: integer }
         size: { type: integer }

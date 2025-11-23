@@ -45,7 +45,6 @@ class ProductVariantServiceTest {
     variant.setProduct(product);
     variant.setKey("variant-key");
     variant.setName("Variant Name");
-    variant.setCapacity(10);
   }
 
   @Test
@@ -94,6 +93,7 @@ class ProductVariantServiceTest {
     assertThat(result).isEmpty();
   }
 }
+
 
 
 

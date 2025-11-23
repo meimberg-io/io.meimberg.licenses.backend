@@ -1,7 +1,6 @@
 package io.meimberg.licenses.service;
 
 import io.meimberg.licenses.domain.Assignment;
-import io.meimberg.licenses.domain.AssignmentStatus;
 import io.meimberg.licenses.domain.ProductVariant;
 import io.meimberg.licenses.domain.User;
 import io.meimberg.licenses.repository.AssignmentRepository;
@@ -9,7 +8,6 @@ import io.meimberg.licenses.repository.ProductVariantRepository;
 import io.meimberg.licenses.repository.UserRepository;
 import io.meimberg.licenses.web.error.ConflictException;
 import jakarta.persistence.EntityNotFoundException;
-import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -37,73 +35,36 @@ public class AssignmentService {
   }
 
   @Transactional
-  public Assignment assign(UUID userId, UUID productVariantId, Instant startsAt, String note) {
+  public Assignment assign(UUID userId, UUID productVariantId, String note) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
     ProductVariant variant = productVariantRepository.findById(productVariantId)
         .orElseThrow(() -> new EntityNotFoundException("Variant not found: " + productVariantId));
 
-    // uniqueness: one ACTIVE per (user, variant)
-    if (assignmentRepository.existsByUserIdAndProductVariantIdAndStatus(userId, productVariantId, AssignmentStatus.ACTIVE)) {
-      throw new ConflictException("Active assignment already exists for user and variant");
-    }
-
-    // capacity check
-    Integer capacity = variant.getCapacity();
-    if (capacity != null) {
-      long activeCount = assignmentRepository.countByProductVariantIdAndStatus(productVariantId, AssignmentStatus.ACTIVE);
-      if (activeCount >= capacity) {
-        throw new ConflictException("Variant capacity exceeded");
-      }
+    // uniqueness: one assignment per (user, variant)
+    if (assignmentRepository.existsByUserIdAndProductVariantId(userId, productVariantId)) {
+      throw new ConflictException("Assignment already exists for user and variant");
     }
 
     Assignment assignment = new Assignment();
     assignment.setId(UUID.randomUUID());
     assignment.setUser(user);
     assignment.setProductVariant(variant);
-    assignment.setStatus(AssignmentStatus.ACTIVE);
-    assignment.setStartsAt(startsAt);
     assignment.setNote(note);
     return assignmentRepository.save(assignment);
   }
 
   @Transactional
-  public Assignment revoke(UUID assignmentId, Instant endsAt) {
-    Assignment assignment = assignmentRepository.findById(assignmentId)
-        .orElseThrow(() -> new EntityNotFoundException("Assignment not found: " + assignmentId));
-    if (assignment.getStatus() == AssignmentStatus.REVOKED) {
-      return assignment; // idempotent
+  public void delete(UUID assignmentId) {
+    if (!assignmentRepository.existsById(assignmentId)) {
+      throw new EntityNotFoundException("Assignment not found: " + assignmentId);
     }
-    assignment.setStatus(AssignmentStatus.REVOKED);
-    assignment.setEndsAt(endsAt == null ? Instant.now() : endsAt);
-    return assignmentRepository.save(assignment);
+    assignmentRepository.deleteById(assignmentId);
   }
 
   @Transactional(readOnly = true)
-  public long activeCount(UUID productVariantId) {
-    return assignmentRepository.countByProductVariantIdAndStatus(productVariantId, AssignmentStatus.ACTIVE);
-  }
-
-  @Transactional
-  public Assignment reactivate(UUID assignmentId) {
-    Assignment assignment = assignmentRepository.findById(assignmentId)
-        .orElseThrow(() -> new EntityNotFoundException("Assignment not found: " + assignmentId));
-    UUID userId = assignment.getUser().getId();
-    UUID variantId = assignment.getProductVariant().getId();
-    if (assignmentRepository.existsByUserIdAndProductVariantIdAndStatus(userId, variantId, AssignmentStatus.ACTIVE)) {
-      throw new ConflictException("Active assignment already exists for user and variant");
-    }
-    ProductVariant variant = assignment.getProductVariant();
-    Integer capacity = variant.getCapacity();
-    if (capacity != null) {
-      long activeCount = assignmentRepository.countByProductVariantIdAndStatus(variantId, AssignmentStatus.ACTIVE);
-      if (activeCount >= capacity) {
-        throw new ConflictException("Variant capacity exceeded");
-      }
-    }
-    assignment.setStatus(AssignmentStatus.ACTIVE);
-    assignment.setEndsAt(null);
-    return assignmentRepository.save(assignment);
+  public long count(UUID productVariantId) {
+    return assignmentRepository.countByProductVariantId(productVariantId);
   }
 }
 

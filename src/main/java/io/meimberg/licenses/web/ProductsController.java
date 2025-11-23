@@ -1,7 +1,9 @@
 package io.meimberg.licenses.web;
 
+import io.meimberg.licenses.domain.Manufacturer;
 import io.meimberg.licenses.domain.Product;
 import io.meimberg.licenses.domain.ProductVariant;
+import io.meimberg.licenses.repository.ManufacturerRepository;
 import io.meimberg.licenses.repository.ProductRepository;
 import io.meimberg.licenses.repository.ProductVariantRepository;
 import io.meimberg.licenses.web.api.ProductsApi;
@@ -33,28 +35,40 @@ public class ProductsController implements ProductsApi {
   private static final Logger log = LoggerFactory.getLogger(ProductsController.class);
   private final ProductRepository productRepository;
   private final ProductVariantRepository productVariantRepository;
+  private final ManufacturerRepository manufacturerRepository;
   private final ProductMapper productMapper;
   private final ProductVariantMapper productVariantMapper;
 
   public ProductsController(
       ProductRepository productRepository,
       ProductVariantRepository productVariantRepository,
+      ManufacturerRepository manufacturerRepository,
       ProductMapper productMapper,
       ProductVariantMapper productVariantMapper
   ) {
     this.productRepository = productRepository;
     this.productVariantRepository = productVariantRepository;
+    this.manufacturerRepository = manufacturerRepository;
     this.productMapper = productMapper;
     this.productVariantMapper = productVariantMapper;
   }
 
   @Override
-  public ResponseEntity<PageProduct> productsGet(Integer page, Integer size, String sort) {
+  public ResponseEntity<PageProduct> productsGet(UUID manufacturerId, Integer page, Integer size, String sort) {
     try {
-      log.debug("productsGet called with page={}, size={}, sort={}", page, size, sort);
+      log.debug("productsGet called with manufacturerId={}, page={}, size={}, sort={}", manufacturerId, page, size, sort);
       Pageable pageable = buildPageable(page, size, sort);
       log.debug("Created pageable: {}", pageable);
-      Page<Product> p = productRepository.findAll(pageable);
+      Page<Product> p;
+      if (manufacturerId != null) {
+        List<Product> products = productRepository.findByManufacturerId(manufacturerId);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), products.size());
+        List<Product> pageContent = products.subList(start, end);
+        p = new org.springframework.data.domain.PageImpl<>(pageContent, pageable, products.size());
+      } else {
+        p = productRepository.findAll(pageable);
+      }
       log.debug("Found {} products", p.getTotalElements());
       List<io.meimberg.licenses.web.dto.Product> content = p.getContent().stream()
           .map(productMapper::toDto)
@@ -91,6 +105,13 @@ public class ProductsController implements ProductsApi {
     if (body.getKey() != null) entity.setKey(body.getKey());
     if (body.getName() != null) entity.setName(body.getName());
     if (body.getDescription() != null) entity.setDescription(body.getDescription());
+    if (body.getManufacturerId() != null && body.getManufacturerId().isPresent()) {
+      Manufacturer manufacturer = manufacturerRepository.findById(body.getManufacturerId().get())
+          .orElseThrow(() -> new EntityNotFoundException("Manufacturer not found"));
+      entity.setManufacturer(manufacturer);
+    } else if (body.getManufacturerId() != null && !body.getManufacturerId().isPresent()) {
+      entity.setManufacturer(null);
+    }
     entity = productRepository.save(entity);
     return ResponseEntity.ok(productMapper.toDto(entity));
   }
@@ -102,7 +123,21 @@ public class ProductsController implements ProductsApi {
     entity.setKey(body.getKey());
     entity.setName(body.getName());
     entity.setDescription(body.getDescription());
+    if (body.getManufacturerId() != null && body.getManufacturerId().isPresent()) {
+      Manufacturer manufacturer = manufacturerRepository.findById(body.getManufacturerId().get())
+          .orElseThrow(() -> new EntityNotFoundException("Manufacturer not found"));
+      entity.setManufacturer(manufacturer);
+    }
     entity = productRepository.save(entity);
+    
+    // Auto-create default variant
+    ProductVariant defaultVariant = new ProductVariant();
+    defaultVariant.setId(UUID.randomUUID());
+    defaultVariant.setProduct(entity);
+    defaultVariant.setKey("default");
+    defaultVariant.setName("Default");
+    productVariantRepository.save(defaultVariant);
+    
     return ResponseEntity.created(URI.create("/api/v1/products/" + entity.getId())).body(productMapper.toDto(entity));
   }
 
@@ -130,11 +165,11 @@ public class ProductsController implements ProductsApi {
     variant.setProduct(product);
     variant.setKey(body.getKey());
     variant.setName(body.getName());
-    if (body.getCapacity() != null && body.getCapacity().isPresent()) {
-      variant.setCapacity(body.getCapacity().get());
+    if (body.getDescription() != null && body.getDescription().isPresent()) {
+      variant.setDescription(body.getDescription().get());
     }
-    if (body.getAttributes() != null && body.getAttributes().isPresent()) {
-      variant.setAttributes(productVariantMapper.toJson(body.getAttributes().get()));
+    if (body.getPrice() != null && body.getPrice().isPresent()) {
+      variant.setPrice(java.math.BigDecimal.valueOf(body.getPrice().get()));
     }
     variant = productVariantRepository.save(variant);
     return ResponseEntity.created(URI.create("/api/v1/variants/" + variant.getId())).body(productVariantMapper.toDto(variant));

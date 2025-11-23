@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.type.SqlTypes;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,12 +44,11 @@ public class ProductVariant {
   @Column(name = "name", nullable = false, length = 255)
   private String name;
 
-  @Column(name = "capacity")
-  private Integer capacity;
+  @Column(name = "description")
+  private String description;
 
-  @Column(name = "attributes", columnDefinition = "json")
-  @JdbcTypeCode(SqlTypes.JSON)
-  private String attributes;
+  @Column(name = "price", precision = 10, scale = 2)
+  private java.math.BigDecimal price;
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)

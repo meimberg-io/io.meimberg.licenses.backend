@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T03:42:56.603338904+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T15:50:51.445317955+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 @Validated
 @Tag(name = "products", description = "the products API")
 public interface ProductsApi {
@@ -47,6 +47,7 @@ public interface ProductsApi {
     /**
      * GET /products : List products
      *
+     * @param manufacturerId  (optional)
      * @param page  (optional)
      * @param size  (optional)
      * @param sort  (optional)
@@ -68,6 +69,7 @@ public interface ProductsApi {
     )
     
     ResponseEntity<PageProduct> productsGet(
+        @Parameter(name = "manufacturerId", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "manufacturerId", required = false) UUID manufacturerId,
         @Min(0) @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
         @Min(1) @Max(200) @Parameter(name = "size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "size", required = false) Integer size,
         @Parameter(name = "sort", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "sort", required = false) String sort

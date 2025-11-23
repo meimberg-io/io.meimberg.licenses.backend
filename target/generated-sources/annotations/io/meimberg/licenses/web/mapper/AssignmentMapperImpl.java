@@ -1,6 +1,5 @@
 package io.meimberg.licenses.web.mapper;
 
-import io.meimberg.licenses.domain.AssignmentStatus;
 import io.meimberg.licenses.domain.ProductVariant;
 import io.meimberg.licenses.domain.User;
 import io.meimberg.licenses.web.dto.Assignment;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-23T01:28:12+0100",
+    date = "2025-11-23T15:50:40+0100",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Ubuntu)"
 )
 @Component
@@ -27,10 +26,7 @@ public class AssignmentMapperImpl implements AssignmentMapper {
         assignment.setUserId( entityUserId( entity ) );
         assignment.setProductVariantId( entityProductVariantId( entity ) );
         assignment.setId( entity.getId() );
-        assignment.setStatus( assignmentStatusToStatusEnum( entity.getStatus() ) );
 
-        assignment.setStartsAt( toNullableTime(entity.getStartsAt()) );
-        assignment.setEndsAt( toNullableTime(entity.getEndsAt()) );
         assignment.setNote( toNullableString(entity.getNote()) );
 
         return assignment;
@@ -64,23 +60,5 @@ public class AssignmentMapperImpl implements AssignmentMapper {
             return null;
         }
         return id;
-    }
-
-    protected Assignment.StatusEnum assignmentStatusToStatusEnum(AssignmentStatus assignmentStatus) {
-        if ( assignmentStatus == null ) {
-            return null;
-        }
-
-        Assignment.StatusEnum statusEnum;
-
-        switch ( assignmentStatus ) {
-            case ACTIVE: statusEnum = Assignment.StatusEnum.ACTIVE;
-            break;
-            case REVOKED: statusEnum = Assignment.StatusEnum.REVOKED;
-            break;
-            default: throw new IllegalArgumentException( "Unexpected enum constant: " + assignmentStatus );
-        }
-
-        return statusEnum;
     }
 }

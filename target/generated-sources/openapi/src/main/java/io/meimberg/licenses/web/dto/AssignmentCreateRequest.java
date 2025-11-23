@@ -4,11 +4,9 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 import org.openapitools.jackson.nullable.JsonNullable;
-import org.springframework.format.annotation.DateTimeFormat;
 import java.util.NoSuchElementException;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
@@ -25,15 +23,12 @@ import jakarta.annotation.Generated;
  * AssignmentCreateRequest
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T03:42:56.603338904+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T15:50:51.445317955+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 public class AssignmentCreateRequest {
 
   private UUID userId;
 
   private UUID productVariantId;
-
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private JsonNullable<OffsetDateTime> startsAt = JsonNullable.<OffsetDateTime>undefined();
 
   private JsonNullable<String> note = JsonNullable.<String>undefined();
 
@@ -89,26 +84,6 @@ public class AssignmentCreateRequest {
     this.productVariantId = productVariantId;
   }
 
-  public AssignmentCreateRequest startsAt(OffsetDateTime startsAt) {
-    this.startsAt = JsonNullable.of(startsAt);
-    return this;
-  }
-
-  /**
-   * Get startsAt
-   * @return startsAt
-   */
-  @Valid 
-  @Schema(name = "startsAt", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("startsAt")
-  public JsonNullable<OffsetDateTime> getStartsAt() {
-    return startsAt;
-  }
-
-  public void setStartsAt(JsonNullable<OffsetDateTime> startsAt) {
-    this.startsAt = startsAt;
-  }
-
   public AssignmentCreateRequest note(String note) {
     this.note = JsonNullable.of(note);
     return this;
@@ -140,7 +115,6 @@ public class AssignmentCreateRequest {
     AssignmentCreateRequest assignmentCreateRequest = (AssignmentCreateRequest) o;
     return Objects.equals(this.userId, assignmentCreateRequest.userId) &&
         Objects.equals(this.productVariantId, assignmentCreateRequest.productVariantId) &&
-        equalsNullable(this.startsAt, assignmentCreateRequest.startsAt) &&
         equalsNullable(this.note, assignmentCreateRequest.note);
   }
 
@@ -150,7 +124,7 @@ public class AssignmentCreateRequest {
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, productVariantId, hashCodeNullable(startsAt), hashCodeNullable(note));
+    return Objects.hash(userId, productVariantId, hashCodeNullable(note));
   }
 
   private static <T> int hashCodeNullable(JsonNullable<T> a) {
@@ -166,7 +140,6 @@ public class AssignmentCreateRequest {
     sb.append("class AssignmentCreateRequest {\n");
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    productVariantId: ").append(toIndentedString(productVariantId)).append("\n");
-    sb.append("    startsAt: ").append(toIndentedString(startsAt)).append("\n");
     sb.append("    note: ").append(toIndentedString(note)).append("\n");
     sb.append("}");
     return sb.toString();

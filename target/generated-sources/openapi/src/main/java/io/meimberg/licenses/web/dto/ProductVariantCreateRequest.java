@@ -5,8 +5,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.util.NoSuchElementException;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -24,17 +22,16 @@ import jakarta.annotation.Generated;
  * ProductVariantCreateRequest
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T03:42:56.603338904+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T15:50:51.445317955+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 public class ProductVariantCreateRequest {
 
   private String key;
 
   private String name;
 
-  private JsonNullable<Integer> capacity = JsonNullable.<Integer>undefined();
+  private JsonNullable<String> description = JsonNullable.<String>undefined();
 
-  @Valid
-  private JsonNullable<Map<String, Object>> attributes = JsonNullable.<Map<String, Object>>undefined();
+  private JsonNullable<Double> price = JsonNullable.<Double>undefined();
 
   public ProductVariantCreateRequest() {
     super();
@@ -88,52 +85,44 @@ public class ProductVariantCreateRequest {
     this.name = name;
   }
 
-  public ProductVariantCreateRequest capacity(Integer capacity) {
-    this.capacity = JsonNullable.of(capacity);
+  public ProductVariantCreateRequest description(String description) {
+    this.description = JsonNullable.of(description);
     return this;
   }
 
   /**
-   * Get capacity
-   * @return capacity
+   * Get description
+   * @return description
    */
   
-  @Schema(name = "capacity", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("capacity")
-  public JsonNullable<Integer> getCapacity() {
-    return capacity;
+  @Schema(name = "description", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("description")
+  public JsonNullable<String> getDescription() {
+    return description;
   }
 
-  public void setCapacity(JsonNullable<Integer> capacity) {
-    this.capacity = capacity;
+  public void setDescription(JsonNullable<String> description) {
+    this.description = description;
   }
 
-  public ProductVariantCreateRequest attributes(Map<String, Object> attributes) {
-    this.attributes = JsonNullable.of(attributes);
-    return this;
-  }
-
-  public ProductVariantCreateRequest putAttributesItem(String key, Object attributesItem) {
-    if (this.attributes == null || !this.attributes.isPresent()) {
-      this.attributes = JsonNullable.of(new HashMap<>());
-    }
-    this.attributes.get().put(key, attributesItem);
+  public ProductVariantCreateRequest price(Double price) {
+    this.price = JsonNullable.of(price);
     return this;
   }
 
   /**
-   * Get attributes
-   * @return attributes
+   * Get price
+   * @return price
    */
   
-  @Schema(name = "attributes", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("attributes")
-  public JsonNullable<Map<String, Object>> getAttributes() {
-    return attributes;
+  @Schema(name = "price", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("price")
+  public JsonNullable<Double> getPrice() {
+    return price;
   }
 
-  public void setAttributes(JsonNullable<Map<String, Object>> attributes) {
-    this.attributes = attributes;
+  public void setPrice(JsonNullable<Double> price) {
+    this.price = price;
   }
 
   @Override
@@ -147,8 +136,8 @@ public class ProductVariantCreateRequest {
     ProductVariantCreateRequest productVariantCreateRequest = (ProductVariantCreateRequest) o;
     return Objects.equals(this.key, productVariantCreateRequest.key) &&
         Objects.equals(this.name, productVariantCreateRequest.name) &&
-        equalsNullable(this.capacity, productVariantCreateRequest.capacity) &&
-        equalsNullable(this.attributes, productVariantCreateRequest.attributes);
+        equalsNullable(this.description, productVariantCreateRequest.description) &&
+        equalsNullable(this.price, productVariantCreateRequest.price);
   }
 
   private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
@@ -157,7 +146,7 @@ public class ProductVariantCreateRequest {
 
   @Override
   public int hashCode() {
-    return Objects.hash(key, name, hashCodeNullable(capacity), hashCodeNullable(attributes));
+    return Objects.hash(key, name, hashCodeNullable(description), hashCodeNullable(price));
   }
 
   private static <T> int hashCodeNullable(JsonNullable<T> a) {
@@ -173,8 +162,8 @@ public class ProductVariantCreateRequest {
     sb.append("class ProductVariantCreateRequest {\n");
     sb.append("    key: ").append(toIndentedString(key)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    capacity: ").append(toIndentedString(capacity)).append("\n");
-    sb.append("    attributes: ").append(toIndentedString(attributes)).append("\n");
+    sb.append("    description: ").append(toIndentedString(description)).append("\n");
+    sb.append("    price: ").append(toIndentedString(price)).append("\n");
     sb.append("}");
     return sb.toString();
   }

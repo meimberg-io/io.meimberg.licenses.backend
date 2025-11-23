@@ -4,6 +4,10 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.Arrays;
+import java.util.UUID;
+import org.openapitools.jackson.nullable.JsonNullable;
+import java.util.NoSuchElementException;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
@@ -19,7 +23,7 @@ import jakarta.annotation.Generated;
  * ProductCreateRequest
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T03:42:56.603338904+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T15:50:51.445317955+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 public class ProductCreateRequest {
 
   private String key;
@@ -27,6 +31,8 @@ public class ProductCreateRequest {
   private String name;
 
   private String description;
+
+  private JsonNullable<UUID> manufacturerId = JsonNullable.<UUID>undefined();
 
   public ProductCreateRequest() {
     super();
@@ -100,6 +106,26 @@ public class ProductCreateRequest {
     this.description = description;
   }
 
+  public ProductCreateRequest manufacturerId(UUID manufacturerId) {
+    this.manufacturerId = JsonNullable.of(manufacturerId);
+    return this;
+  }
+
+  /**
+   * Get manufacturerId
+   * @return manufacturerId
+   */
+  @Valid 
+  @Schema(name = "manufacturerId", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("manufacturerId")
+  public JsonNullable<UUID> getManufacturerId() {
+    return manufacturerId;
+  }
+
+  public void setManufacturerId(JsonNullable<UUID> manufacturerId) {
+    this.manufacturerId = manufacturerId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -111,12 +137,24 @@ public class ProductCreateRequest {
     ProductCreateRequest productCreateRequest = (ProductCreateRequest) o;
     return Objects.equals(this.key, productCreateRequest.key) &&
         Objects.equals(this.name, productCreateRequest.name) &&
-        Objects.equals(this.description, productCreateRequest.description);
+        Objects.equals(this.description, productCreateRequest.description) &&
+        equalsNullable(this.manufacturerId, productCreateRequest.manufacturerId);
+  }
+
+  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
+    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(key, name, description);
+    return Objects.hash(key, name, description, hashCodeNullable(manufacturerId));
+  }
+
+  private static <T> int hashCodeNullable(JsonNullable<T> a) {
+    if (a == null) {
+      return 1;
+    }
+    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
   }
 
   @Override
@@ -126,6 +164,7 @@ public class ProductCreateRequest {
     sb.append("    key: ").append(toIndentedString(key)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
+    sb.append("    manufacturerId: ").append(toIndentedString(manufacturerId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

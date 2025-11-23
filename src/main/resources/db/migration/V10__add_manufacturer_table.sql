@@ -1,0 +1,13 @@
+-- Manufacturers
+CREATE TABLE IF NOT EXISTS manufacturers (
+  id CHAR(36) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  url VARCHAR(500) NULL,
+  description TEXT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  version INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_manufacturers_name (name)
+);
+

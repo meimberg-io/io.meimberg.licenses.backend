@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T03:42:56.603338904+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T15:50:51.445317955+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 @Validated
 @Tag(name = "assignments", description = "the assignments API")
 public interface AssignmentsApi {
@@ -46,7 +46,6 @@ public interface AssignmentsApi {
      *
      * @param userId  (optional)
      * @param variantId  (optional)
-     * @param status  (optional)
      * @param page  (optional)
      * @param size  (optional)
      * @param sort  (optional)
@@ -70,10 +69,34 @@ public interface AssignmentsApi {
     ResponseEntity<PageAssignment> assignmentsGet(
         @Parameter(name = "userId", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "userId", required = false) UUID userId,
         @Parameter(name = "variantId", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "variantId", required = false) UUID variantId,
-        @Parameter(name = "status", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "status", required = false) String status,
         @Min(0) @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
         @Min(1) @Max(200) @Parameter(name = "size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "size", required = false) Integer size,
         @Parameter(name = "sort", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "sort", required = false) String sort
+    );
+
+
+    /**
+     * DELETE /assignments/{id} : Delete assignment
+     *
+     * @param id  (required)
+     * @return No content (status code 204)
+     *         or Not found (status code 404)
+     */
+    @Operation(
+        operationId = "assignmentsIdDelete",
+        summary = "Delete assignment",
+        responses = {
+            @ApiResponse(responseCode = "204", description = "No content"),
+            @ApiResponse(responseCode = "404", description = "Not found")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.DELETE,
+        value = "/assignments/{id}"
+    )
+    
+    ResponseEntity<Void> assignmentsIdDelete(
+        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") UUID id
     );
 
 
@@ -106,21 +129,21 @@ public interface AssignmentsApi {
 
 
     /**
-     * PATCH /assignments/{id} : Update assignment (revoke/reactivate)
+     * PATCH /assignments/{id} : Update assignment
      *
      * @param id  (required)
      * @param assignmentUpdateRequest  (required)
      * @return OK (status code 200)
-     *         or Conflict (capacity or duplicate) (status code 409)
+     *         or Not found (status code 404)
      */
     @Operation(
         operationId = "assignmentsIdPatch",
-        summary = "Update assignment (revoke/reactivate)",
+        summary = "Update assignment",
         responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = Assignment.class))
             }),
-            @ApiResponse(responseCode = "409", description = "Conflict (capacity or duplicate)")
+            @ApiResponse(responseCode = "404", description = "Not found")
         }
     )
     @RequestMapping(

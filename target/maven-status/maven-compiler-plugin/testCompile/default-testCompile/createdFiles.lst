@@ -1,9 +1,0 @@
-io/meimberg/licenses/service/AssignmentServiceTest.class
-io/meimberg/licenses/web/mapper/ProductMapperTest.class
-io/meimberg/licenses/service/ProductVariantServiceTest.class
-io/meimberg/licenses/DatabaseIntegrationTest.class
-io/meimberg/licenses/web/mapper/AssignmentMapperTest.class
-io/meimberg/licenses/web/mapper/UserMapperTest.class
-io/meimberg/licenses/service/UserServiceTest.class
-io/meimberg/licenses/service/ProductServiceTest.class
-io/meimberg/licenses/web/mapper/ProductVariantMapperTest.class
