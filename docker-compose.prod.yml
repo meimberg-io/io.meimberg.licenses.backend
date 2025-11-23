@@ -13,8 +13,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:mysql://${PROJECT_NAME}-db:3306/licenses?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
-      - SPRING_DATASOURCE_USERNAME=\${DB_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=\${DB_PASSWORD}
+      - SPRING_DATASOURCE_USERNAME=$${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=$${DB_PASSWORD}
       - PORT=8080
     networks:
       - ${PROJECT_NAME}
@@ -36,10 +36,10 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      - MYSQL_ROOT_PASSWORD=\${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=$${DB_PASSWORD}
       - MYSQL_DATABASE=licenses
-      - MYSQL_USER=\${DB_USERNAME}
-      - MYSQL_PASSWORD=\${DB_PASSWORD}
+      - MYSQL_USER=$${DB_USERNAME}
+      - MYSQL_PASSWORD=$${DB_PASSWORD}
     volumes:
       - ${PROJECT_NAME}-data:/var/lib/mysql
     networks:
