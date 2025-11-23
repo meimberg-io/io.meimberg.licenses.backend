@@ -21,11 +21,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/v1")
 public class ProductsController implements ProductsApi {
+  private static final Logger log = LoggerFactory.getLogger(ProductsController.class);
   private final ProductRepository productRepository;
   private final ProductVariantRepository productVariantRepository;
   private final ProductMapper productMapper;
@@ -45,18 +50,26 @@ public class ProductsController implements ProductsApi {
 
   @Override
   public ResponseEntity<PageProduct> productsGet(Integer page, Integer size, String sort) {
-    Pageable pageable = buildPageable(page, size, sort);
-    Page<Product> p = productRepository.findAll(pageable);
-    List<io.meimberg.licenses.web.dto.Product> content = p.getContent().stream()
-        .map(productMapper::toDto)
-        .toList();
-    PageProduct dto = new PageProduct();
-    dto.setContent(content);
-    dto.setTotalElements((int) p.getTotalElements());
-    dto.setTotalPages(p.getTotalPages());
-    dto.setSize(p.getSize());
-    dto.setNumber(p.getNumber());
-    return ResponseEntity.ok(dto);
+    try {
+      log.debug("productsGet called with page={}, size={}, sort={}", page, size, sort);
+      Pageable pageable = buildPageable(page, size, sort);
+      log.debug("Created pageable: {}", pageable);
+      Page<Product> p = productRepository.findAll(pageable);
+      log.debug("Found {} products", p.getTotalElements());
+      List<io.meimberg.licenses.web.dto.Product> content = p.getContent().stream()
+          .map(productMapper::toDto)
+          .toList();
+      PageProduct dto = new PageProduct();
+      dto.setContent(content);
+      dto.setTotalElements((int) p.getTotalElements());
+      dto.setTotalPages(p.getTotalPages());
+      dto.setSize(p.getSize());
+      dto.setNumber(p.getNumber());
+      return ResponseEntity.ok(dto);
+    } catch (Exception e) {
+      log.error("Error in productsGet: {}", e.getMessage(), e);
+      throw e;
+    }
   }
 
   @Override
