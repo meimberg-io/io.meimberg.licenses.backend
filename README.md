@@ -24,6 +24,20 @@ Java 21 / Spring Boot 3.3 backend for managing products, product variants, users
 - Profiles: `dev`, `test`, `prod`
 - Dev DB (Compose): `jdbc:mysql://db:3306/licenses` (see `docker-compose.yml`)
 - Flyway migrations are applied on startup from `classpath:db/migration`
+- **Test data:** Seed migrations (V2, V3) only run in `dev` and `test` profiles, not in `prod`
+
+### Deployment
+
+Automatic deployment via GitHub Actions on push to `main` branch.
+
+**Documentation:**
+- [DEPLOYMENT.md](docs/DEPLOYMENT.md) - Deployment operations and troubleshooting
+- [GITHUB-SETUP.md](docs/GITHUB-SETUP.md) - Initial GitHub setup
+
+**Quick deploy:**
+```bash
+git push origin main
+```
 
 ### Testing
 ```bash

@@ -1,0 +1,56 @@
+# Production docker-compose.yml
+# Used by GitHub Actions deployment workflow
+# Variables are substituted using envsubst during deployment
+
+version: "3.9"
+
+services:
+  ${PROJECT_NAME}:
+    image: ${DOCKER_IMAGE}
+    container_name: ${PROJECT_NAME}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:mysql://${PROJECT_NAME}-db:3306/licenses?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=\${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=\${DB_PASSWORD}
+      - PORT=8080
+    networks:
+      - ${PROJECT_NAME}
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.${PROJECT_NAME}.rule=Host(`${APP_DOMAIN}`)"
+      - "traefik.http.routers.${PROJECT_NAME}.entrypoints=websecure"
+      - "traefik.http.routers.${PROJECT_NAME}.tls.certresolver=le"
+      - "traefik.http.services.${PROJECT_NAME}.loadbalancer.server.port=8080"
+    depends_on:
+      - ${PROJECT_NAME}-db
+
+  ${PROJECT_NAME}-db:
+    image: mysql:8.0
+    container_name: ${PROJECT_NAME}-db
+    platform: linux/amd64
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=\${DB_PASSWORD}
+      - MYSQL_DATABASE=licenses
+      - MYSQL_USER=\${DB_USERNAME}
+      - MYSQL_PASSWORD=\${DB_PASSWORD}
+    volumes:
+      - ${PROJECT_NAME}-data:/var/lib/mysql
+    networks:
+      - ${PROJECT_NAME}
+
+volumes:
+  ${PROJECT_NAME}-data:
+
+networks:
+  ${PROJECT_NAME}:
+    driver: bridge
+  traefik:
+    external: true
+
