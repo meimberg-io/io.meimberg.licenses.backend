@@ -38,6 +38,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        physical_naming_strategy: io.meimberg.licenses.config.QuotedNamingStrategy
         jdbc:
           time_zone: UTC
 server:
@@ -66,6 +67,9 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        physical_naming_strategy: io.meimberg.licenses.config.QuotedNamingStrategy
 
 ---
 spring:
@@ -80,6 +84,9 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        physical_naming_strategy: io.meimberg.licenses.config.QuotedNamingStrategy
   flyway:
     baseline-on-migrate: true
     locations: classpath:db/migration
