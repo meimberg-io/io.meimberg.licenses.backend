@@ -26,7 +26,7 @@ import jakarta.annotation.Generated;
  * Assignment
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T01:28:09.699733449+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T03:42:56.603338904+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 public class Assignment {
 
   private UUID id;
