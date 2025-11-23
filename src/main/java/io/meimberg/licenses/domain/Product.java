@@ -47,6 +47,10 @@ public class Product {
   @JoinColumn(name = "manufacturer_id", nullable = true)
   private Manufacturer manufacturer;
 
+  @ManyToOne(fetch = FetchType.LAZY, optional = true)
+  @JoinColumn(name = "category_id", nullable = true)
+  private ProductCategory category;
+
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;

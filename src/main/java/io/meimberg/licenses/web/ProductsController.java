@@ -2,8 +2,10 @@ package io.meimberg.licenses.web;
 
 import io.meimberg.licenses.domain.Manufacturer;
 import io.meimberg.licenses.domain.Product;
+import io.meimberg.licenses.domain.ProductCategory;
 import io.meimberg.licenses.domain.ProductVariant;
 import io.meimberg.licenses.repository.ManufacturerRepository;
+import io.meimberg.licenses.repository.ProductCategoryRepository;
 import io.meimberg.licenses.repository.ProductRepository;
 import io.meimberg.licenses.repository.ProductVariantRepository;
 import io.meimberg.licenses.web.api.ProductsApi;
@@ -36,6 +38,7 @@ public class ProductsController implements ProductsApi {
   private final ProductRepository productRepository;
   private final ProductVariantRepository productVariantRepository;
   private final ManufacturerRepository manufacturerRepository;
+  private final ProductCategoryRepository productCategoryRepository;
   private final ProductMapper productMapper;
   private final ProductVariantMapper productVariantMapper;
 
@@ -43,32 +46,39 @@ public class ProductsController implements ProductsApi {
       ProductRepository productRepository,
       ProductVariantRepository productVariantRepository,
       ManufacturerRepository manufacturerRepository,
+      ProductCategoryRepository productCategoryRepository,
       ProductMapper productMapper,
       ProductVariantMapper productVariantMapper
   ) {
     this.productRepository = productRepository;
     this.productVariantRepository = productVariantRepository;
     this.manufacturerRepository = manufacturerRepository;
+    this.productCategoryRepository = productCategoryRepository;
     this.productMapper = productMapper;
     this.productVariantMapper = productVariantMapper;
   }
 
   @Override
-  public ResponseEntity<PageProduct> productsGet(UUID manufacturerId, Integer page, Integer size, String sort) {
+  public ResponseEntity<PageProduct> productsGet(UUID manufacturerId, UUID categoryId, Integer page, Integer size, String sort) {
     try {
-      log.debug("productsGet called with manufacturerId={}, page={}, size={}, sort={}", manufacturerId, page, size, sort);
+      log.debug("productsGet called with manufacturerId={}, categoryId={}, page={}, size={}, sort={}", manufacturerId, categoryId, page, size, sort);
       Pageable pageable = buildPageable(page, size, sort);
       log.debug("Created pageable: {}", pageable);
       Page<Product> p;
-      if (manufacturerId != null) {
-        List<Product> products = productRepository.findByManufacturerId(manufacturerId);
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), products.size());
-        List<Product> pageContent = products.subList(start, end);
-        p = new org.springframework.data.domain.PageImpl<>(pageContent, pageable, products.size());
+      List<Product> products;
+      if (manufacturerId != null && categoryId != null) {
+        products = productRepository.findByManufacturerIdAndCategoryId(manufacturerId, categoryId);
+      } else if (manufacturerId != null) {
+        products = productRepository.findByManufacturerId(manufacturerId);
+      } else if (categoryId != null) {
+        products = productRepository.findByCategoryId(categoryId);
       } else {
-        p = productRepository.findAll(pageable);
+        products = productRepository.findAll();
       }
+      int start = (int) pageable.getOffset();
+      int end = Math.min((start + pageable.getPageSize()), products.size());
+      List<Product> pageContent = start < products.size() ? products.subList(start, end) : List.of();
+      p = new org.springframework.data.domain.PageImpl<>(pageContent, pageable, products.size());
       log.debug("Found {} products", p.getTotalElements());
       List<io.meimberg.licenses.web.dto.Product> content = p.getContent().stream()
           .map(productMapper::toDto)
@@ -112,6 +122,13 @@ public class ProductsController implements ProductsApi {
     } else if (body.getManufacturerId() != null && !body.getManufacturerId().isPresent()) {
       entity.setManufacturer(null);
     }
+    if (body.getCategoryId() != null && body.getCategoryId().isPresent()) {
+      ProductCategory category = productCategoryRepository.findById(body.getCategoryId().get())
+          .orElseThrow(() -> new EntityNotFoundException("ProductCategory not found"));
+      entity.setCategory(category);
+    } else if (body.getCategoryId() != null && !body.getCategoryId().isPresent()) {
+      entity.setCategory(null);
+    }
     entity = productRepository.save(entity);
     return ResponseEntity.ok(productMapper.toDto(entity));
   }
@@ -127,6 +144,11 @@ public class ProductsController implements ProductsApi {
       Manufacturer manufacturer = manufacturerRepository.findById(body.getManufacturerId().get())
           .orElseThrow(() -> new EntityNotFoundException("Manufacturer not found"));
       entity.setManufacturer(manufacturer);
+    }
+    if (body.getCategoryId() != null && body.getCategoryId().isPresent()) {
+      ProductCategory category = productCategoryRepository.findById(body.getCategoryId().get())
+          .orElseThrow(() -> new EntityNotFoundException("ProductCategory not found"));
+      entity.setCategory(category);
     }
     entity = productRepository.save(entity);
     

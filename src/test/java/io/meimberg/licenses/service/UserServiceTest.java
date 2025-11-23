@@ -1,6 +1,8 @@
 package io.meimberg.licenses.service;
 
+import io.meimberg.licenses.domain.Department;
 import io.meimberg.licenses.domain.User;
+import io.meimberg.licenses.repository.DepartmentRepository;
 import io.meimberg.licenses.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
@@ -30,19 +32,31 @@ class UserServiceTest {
   @Mock
   private UserRepository userRepository;
 
+  @Mock
+  private DepartmentRepository departmentRepository;
+
   @InjectMocks
   private UserService userService;
 
   private UUID userId;
+  private UUID departmentId;
   private User user;
+  private Department department;
 
   @BeforeEach
   void setUp() {
     userId = UUID.randomUUID();
+    departmentId = UUID.randomUUID();
+    
+    department = new Department();
+    department.setId(departmentId);
+    department.setName("Test Department");
+    
     user = new User();
     user.setId(userId);
     user.setEmail("test@example.com");
     user.setDisplayName("Test User");
+    user.setDepartment(department);
   }
 
   @Test
@@ -88,7 +102,7 @@ class UserServiceTest {
 
     when(userRepository.findByEmailContainingIgnoreCase("test", pageable)).thenReturn(page);
 
-    Page<User> result = userService.search("test", pageable);
+    Page<User> result = userService.search("test", null, pageable);
 
     assertThat(result.getContent()).hasSize(1);
     assertThat(result.getContent().get(0)).isEqualTo(user);
@@ -103,7 +117,7 @@ class UserServiceTest {
 
     when(userRepository.findAll(pageable)).thenReturn(page);
 
-    Page<User> result = userService.search("  ", pageable);
+    Page<User> result = userService.search("  ", null, pageable);
 
     assertThat(result.getContent()).hasSize(1);
     verify(userRepository).findAll(pageable);
@@ -117,7 +131,7 @@ class UserServiceTest {
 
     when(userRepository.findAll(pageable)).thenReturn(page);
 
-    Page<User> result = userService.search(null, pageable);
+    Page<User> result = userService.search(null, null, pageable);
 
     assertThat(result.getContent()).hasSize(1);
     verify(userRepository).findAll(pageable);
@@ -129,19 +143,22 @@ class UserServiceTest {
     String email = "new@example.com";
     String displayName = "New User";
 
+    when(departmentRepository.findById(departmentId)).thenReturn(Optional.of(department));
     when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
       User u = invocation.getArgument(0);
       u.setId(userId);
       return u;
     });
 
-    User result = userService.create(email, displayName);
+    User result = userService.create(email, displayName, departmentId);
 
     assertThat(result).isNotNull();
     assertThat(result.getId()).isEqualTo(userId);
     assertThat(result.getEmail()).isEqualTo(email);
     assertThat(result.getDisplayName()).isEqualTo(displayName);
+    assertThat(result.getDepartment()).isEqualTo(department);
     verify(userRepository).save(any(User.class));
+    verify(departmentRepository).findById(departmentId);
   }
 
   @Test
@@ -152,11 +169,12 @@ class UserServiceTest {
     when(userRepository.findById(userId)).thenReturn(Optional.of(user));
     when(userRepository.save(user)).thenReturn(user);
 
-    User result = userService.update(userId, newEmail, newDisplayName);
+    User result = userService.update(userId, newEmail, newDisplayName, null);
 
     assertThat(result.getEmail()).isEqualTo(newEmail);
     assertThat(result.getDisplayName()).isEqualTo(newDisplayName);
     verify(userRepository).save(user);
+    verify(departmentRepository, never()).findById(any());
   }
 
   @Test
@@ -166,18 +184,19 @@ class UserServiceTest {
     when(userRepository.findById(userId)).thenReturn(Optional.of(user));
     when(userRepository.save(user)).thenReturn(user);
 
-    User result = userService.update(userId, newEmail, null);
+    User result = userService.update(userId, newEmail, null, null);
 
     assertThat(result.getEmail()).isEqualTo(newEmail);
     assertThat(result.getDisplayName()).isEqualTo(user.getDisplayName());
     verify(userRepository).save(user);
+    verify(departmentRepository, never()).findById(any());
   }
 
   @Test
   void update_notFound() {
     when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> userService.update(userId, "new@example.com", "New Name"))
+    assertThatThrownBy(() -> userService.update(userId, "new@example.com", "New Name", null))
         .isInstanceOf(EntityNotFoundException.class)
         .hasMessageContaining("User not found");
 

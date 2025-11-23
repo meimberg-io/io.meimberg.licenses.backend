@@ -38,9 +38,10 @@ public class UsersController {
   @GetMapping("/users")
   public ResponseEntity<PageUser> listUsers(
       @RequestParam(value = "email", required = false) String email,
+      @RequestParam(value = "departmentId", required = false) UUID departmentId,
       @PageableDefault Pageable pageable
   ) {
-    Page<User> page = userService.search(email, pageable);
+    Page<User> page = userService.search(email, departmentId, pageable);
     List<io.meimberg.licenses.web.dto.User> content = page.getContent().stream()
         .map(userMapper::toDto)
         .toList();
@@ -65,7 +66,7 @@ public class UsersController {
   public ResponseEntity<io.meimberg.licenses.web.dto.User> createUser(
       @Valid @RequestBody UserCreateRequest request
   ) {
-    User created = userService.create(request.getEmail(), request.getDisplayName());
+    User created = userService.create(request.getEmail(), request.getDisplayName(), request.getDepartmentId());
     io.meimberg.licenses.web.dto.User body = userMapper.toDto(created);
     return ResponseEntity.created(URI.create("/api/v1/users/" + created.getId())).body(body);
   }
@@ -75,7 +76,7 @@ public class UsersController {
       @PathVariable("id") UUID id,
       @Valid @RequestBody UserUpdateRequest request
   ) {
-    User updated = userService.update(id, request.getEmail(), request.getDisplayName());
+    User updated = userService.update(id, request.getEmail(), request.getDisplayName(), request.getDepartmentId());
     return ResponseEntity.ok(userMapper.toDto(updated));
   }
 

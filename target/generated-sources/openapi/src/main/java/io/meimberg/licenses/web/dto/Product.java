@@ -23,7 +23,7 @@ import jakarta.annotation.Generated;
  * Product
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T15:50:51.445317955+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-11-23T17:42:22.760008697+01:00[Europe/Berlin]", comments = "Generator version: 7.7.0")
 public class Product {
 
   private UUID id;
@@ -35,6 +35,8 @@ public class Product {
   private String description;
 
   private JsonNullable<UUID> manufacturerId = JsonNullable.<UUID>undefined();
+
+  private JsonNullable<UUID> categoryId = JsonNullable.<UUID>undefined();
 
   public Product() {
     super();
@@ -149,6 +151,26 @@ public class Product {
     this.manufacturerId = manufacturerId;
   }
 
+  public Product categoryId(UUID categoryId) {
+    this.categoryId = JsonNullable.of(categoryId);
+    return this;
+  }
+
+  /**
+   * Get categoryId
+   * @return categoryId
+   */
+  @Valid 
+  @Schema(name = "categoryId", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("categoryId")
+  public JsonNullable<UUID> getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(JsonNullable<UUID> categoryId) {
+    this.categoryId = categoryId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -162,7 +184,8 @@ public class Product {
         Objects.equals(this.key, product.key) &&
         Objects.equals(this.name, product.name) &&
         Objects.equals(this.description, product.description) &&
-        equalsNullable(this.manufacturerId, product.manufacturerId);
+        equalsNullable(this.manufacturerId, product.manufacturerId) &&
+        equalsNullable(this.categoryId, product.categoryId);
   }
 
   private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
@@ -171,7 +194,7 @@ public class Product {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, key, name, description, hashCodeNullable(manufacturerId));
+    return Objects.hash(id, key, name, description, hashCodeNullable(manufacturerId), hashCodeNullable(categoryId));
   }
 
   private static <T> int hashCodeNullable(JsonNullable<T> a) {
@@ -190,6 +213,7 @@ public class Product {
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    manufacturerId: ").append(toIndentedString(manufacturerId)).append("\n");
+    sb.append("    categoryId: ").append(toIndentedString(categoryId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

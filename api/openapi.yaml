@@ -98,6 +98,10 @@ paths:
           name: manufacturerId
           schema:
             $ref: '#/components/schemas/UUID'
+        - in: query
+          name: categoryId
+          schema:
+            $ref: '#/components/schemas/UUID'
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Size'
         - $ref: '#/components/parameters/Sort'
@@ -457,6 +461,168 @@ paths:
       responses:
         '204':
           description: No content
+  /departments:
+    get:
+      summary: List departments
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDepartment'
+    post:
+      summary: Create department
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartmentCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+  /departments/{id}:
+    get:
+      summary: Get department by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+        '404':
+          description: Not found
+    put:
+      summary: Update department
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartmentUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete department
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '204':
+          description: No content
+  /product-categories:
+    get:
+      summary: List product categories
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageProductCategory'
+    post:
+      summary: Create product category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCategoryCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCategory'
+  /product-categories/{id}:
+    get:
+      summary: Get product category by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCategory'
+        '404':
+          description: Not found
+    put:
+      summary: Update product category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCategoryUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCategory'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete product category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '204':
+          description: No content
 components:
   parameters:
     Page:
@@ -490,6 +656,7 @@ components:
         - id
         - email
         - displayName
+        - departmentId
       properties:
         id:
           $ref: '#/components/schemas/UUID'
@@ -498,17 +665,22 @@ components:
           format: email
         displayName:
           type: string
+        departmentId:
+          $ref: '#/components/schemas/UUID'
     UserCreateRequest:
       type: object
       required:
         - email
         - displayName
+        - departmentId
       properties:
         email:
           type: string
           format: email
         displayName:
           type: string
+        departmentId:
+          $ref: '#/components/schemas/UUID'
     UserUpdateRequest:
       type: object
       properties:
@@ -517,6 +689,8 @@ components:
           format: email
         displayName:
           type: string
+        departmentId:
+          $ref: '#/components/schemas/UUID'
     PageUser:
       type: object
       properties:
@@ -544,6 +718,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        categoryId:
+          type: string
+          format: uuid
+          nullable: true
     ProductCreateRequest:
       type: object
       required: [key, name]
@@ -555,6 +733,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        categoryId:
+          type: string
+          format: uuid
+          nullable: true
     ProductUpdateRequest:
       type: object
       properties:
@@ -562,6 +744,10 @@ components:
         name: { type: string }
         description: { type: string }
         manufacturerId:
+          type: string
+          format: uuid
+          nullable: true
+        categoryId:
           type: string
           format: uuid
           nullable: true
@@ -690,4 +876,64 @@ components:
         totalPages: { type: integer }
         size: { type: integer }
         number: { type: integer }
+    Department:
+      type: object
+      required: [id, name]
+      properties:
+        id: { $ref: '#/components/schemas/UUID' }
+        name: { type: string }
+    DepartmentCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string }
+    DepartmentUpdateRequest:
+      type: object
+      properties:
+        name: { type: string }
+    PageDepartment:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        size:
+          type: integer
+        number:
+          type: integer
+    ProductCategory:
+      type: object
+      required: [id, name]
+      properties:
+        id: { $ref: '#/components/schemas/UUID' }
+        name: { type: string }
+    ProductCategoryCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string }
+    ProductCategoryUpdateRequest:
+      type: object
+      properties:
+        name: { type: string }
+    PageProductCategory:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductCategory'
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        size:
+          type: integer
+        number:
+          type: integer
 
