@@ -104,3 +104,4 @@ public class ManufacturersController implements ManufacturersApi {
   }
 }
 
+

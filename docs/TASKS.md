@@ -1,7 +1,6 @@
 # Features
 
-* Each Product can be in one Category. We need a Productcategory List (only Name). Product list can be filtered by Productcategory. Matrix can be filtered by Productcategory
-* Filter Matix by Manufacturer
+* 
 
 # Bugs
 

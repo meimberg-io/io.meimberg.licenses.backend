@@ -10,3 +10,4 @@ CREATE INDEX idx_user_department ON users (department_id);
 -- Note: department_id is initially nullable to allow migration of existing data
 -- After migrating existing users, you may want to make it NOT NULL
 
+

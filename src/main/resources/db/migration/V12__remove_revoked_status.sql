@@ -8,3 +8,4 @@ DELETE FROM assignments WHERE status = 'REVOKED';
 -- Modify the ENUM to remove REVOKED
 ALTER TABLE assignments MODIFY COLUMN status ENUM('ACTIVE') NOT NULL DEFAULT 'ACTIVE';
 
+

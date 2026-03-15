@@ -9,3 +9,4 @@ public interface ProductCategoryMapper {
   io.meimberg.licenses.web.dto.ProductCategory toDto(ProductCategory entity);
 }
 
+

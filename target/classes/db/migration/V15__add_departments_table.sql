@@ -9,3 +9,4 @@ CREATE TABLE IF NOT EXISTS departments (
   UNIQUE KEY uk_departments_name (name)
 );
 
+

@@ -9,3 +9,4 @@ public interface DepartmentMapper {
   io.meimberg.licenses.web.dto.Department toDto(Department entity);
 }
 
+

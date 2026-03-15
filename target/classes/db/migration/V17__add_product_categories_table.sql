@@ -8,3 +8,4 @@ CREATE TABLE IF NOT EXISTS product_categories (
   UNIQUE KEY uk_product_categories_name (name)
 );
 
+

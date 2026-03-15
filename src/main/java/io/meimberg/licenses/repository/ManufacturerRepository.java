@@ -9,3 +9,4 @@ public interface ManufacturerRepository extends JpaRepository<Manufacturer, UUID
   Optional<Manufacturer> findByName(String name);
 }
 
+

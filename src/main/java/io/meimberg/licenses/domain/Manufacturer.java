@@ -53,3 +53,4 @@ public class Manufacturer {
   private int version;
 }
 
+

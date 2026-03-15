@@ -95,3 +95,4 @@ public class DepartmentsController implements io.meimberg.licenses.web.api.Depar
   }
 }
 
+

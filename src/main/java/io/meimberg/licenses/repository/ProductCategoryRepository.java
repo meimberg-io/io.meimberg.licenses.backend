@@ -10,3 +10,4 @@ public interface ProductCategoryRepository extends JpaRepository<ProductCategory
   Optional<ProductCategory> findByName(String name);
 }
 
+
